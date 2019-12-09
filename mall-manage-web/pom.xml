@@ -43,7 +43,12 @@
 			<artifactId>mall-web-util</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
-	</dependencies>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-tx</artifactId>
+            <version>5.1.10.RELEASE</version>
+        </dependency>
+    </dependencies>
 
 
 

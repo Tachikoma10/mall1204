@@ -6,40 +6,52 @@ import com.sanriyue.mall.manage.mapper.*;
 import com.sanriyue.mall.service.ManageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
-import tk.mybatis.mapper.entity.Example;
+
 
 import java.util.List;
 @Service
 public class ManageServiceImpl implements ManageService{
     @Autowired
-    BaseAttrInfoMapper baseAttrInfoMapper;
+    private BaseAttrInfoMapper baseAttrInfoMapper;
 
     @Autowired
-    BaseAttrValueMapper baseAttrValueMapper;
+    private BaseAttrValueMapper baseAttrValueMapper;
 
     @Autowired
-    BaseCatalog1Mapper baseCatalog1Mapper;
+    private BaseCatalog1Mapper baseCatalog1Mapper;
 
     @Autowired
-    BaseCatalog2Mapper baseCatalog2Mapper;
+    private BaseCatalog2Mapper baseCatalog2Mapper;
 
     @Autowired
-    BaseCatalog3Mapper baseCatalog3Mapper;
+    private BaseCatalog3Mapper baseCatalog3Mapper;
 
     @Autowired
-    SpuInfoMapper spuInfoMapper;
+    private SpuInfoMapper spuInfoMapper;
 
     @Autowired
-    SpuImageMapper spuImageMapper;
+    private SpuImageMapper spuImageMapper;
 
     @Autowired
-    BaseSaleAttrMapper baseSaleAttrMapper;
+    private BaseSaleAttrMapper baseSaleAttrMapper;
 
     @Autowired
-    SpuSaleAttrMapper spuSaleAttrMapper;
+    private SpuSaleAttrMapper spuSaleAttrMapper;
 
     @Autowired
-    SpuSaleAttrValueMapper spuSaleAttrValueMapper;
+    private SpuSaleAttrValueMapper spuSaleAttrValueMapper;
+
+    @Autowired
+    private SkuInfoMapper skuInfoMapper;
+
+    @Autowired
+    private SkuImageMapper skuImageMapper;
+
+    @Autowired
+    private SkuSaleAttrValueMapper skuSaleAttrValueMapper;
+
+    @Autowired
+    private SkuAttrValueMapper skuAttrValueMapper;
 
     @Override
     public List<BaseCatalog1> getCatalog1() {
@@ -62,9 +74,8 @@ public class ManageServiceImpl implements ManageService{
 
     @Override
     public List<BaseAttrInfo> getAttrList(String catalog3Id) {
-        BaseAttrInfo baseAttrInfo = new BaseAttrInfo();
-        baseAttrInfo.setCatalog3Id(catalog3Id);
-        return baseAttrInfoMapper.select(baseAttrInfo);
+
+        return baseAttrInfoMapper.getAttrInfoList(catalog3Id);
     }
 
     /**
@@ -206,12 +217,88 @@ public class ManageServiceImpl implements ManageService{
         }
     }
 
+    @Override
+    public List<SpuImage> getSpuImageList(String spuId) {
+        SpuImage spuImage = new SpuImage();
+        spuImage.setSpuId(spuId);
+        return spuImageMapper.select(spuImage);
+    }
+
+    /**
+     * 功能描述: <要查询spu销售属性和销售属性值，不能用通用mapper了。自定义sql查询>
+     * @MethodName: getSpuSaleAttrList
+     * @Param: [spuId]
+     * @Return: java.util.List<com.sanriyue.mall.bean.SpuSaleAttr>
+     * @Author: 三日月
+     * @Date: 2019/12/9 19:15
+     */
+    @Override
+    public List<SpuSaleAttr> getSpuSaleAttrList(String spuId) {
+
+        return spuSaleAttrMapper.getSpuSaleAttrList(spuId);
+    }
+
+    /**
+     * 功能描述: <实现添加skuInfo的最后一步保存>
+     * @MethodName: saveSkuInfo
+     * @Param: [spuInfo]
+     * @Return: void
+     * @Author: 三日月
+     * @Date: 2019/12/9 19:46
+     */
+    @Override
+    @Transactional
+    public void saveSkuInfo(SkuInfo skuInfo) {
+        //先保存skuInfo中的基本属性
+        skuInfoMapper.insertSelective(skuInfo);
+        //保存sku平台属性值的时候需要遍历
+        //先删除后插入
+        /*SkuAttrValue skuAttrValue = new SkuAttrValue();
+        skuAttrValue.setSkuId(skuInfo.getId());
+        skuAttrValueMapper.delete(skuAttrValue);*/
+
+        List<SkuAttrValue> skuAttrValueList = skuInfo.getSkuAttrValueList();
+        if (checkList(skuAttrValueList)){
+            for (SkuAttrValue attrValue : skuAttrValueList) {
+                attrValue.setSkuId(skuInfo.getId());
+                skuAttrValueMapper.insertSelective(attrValue);
+            }
+        }
+
+        //保存sku图片，原理同上
+        /*SkuImage skuImage = new SkuImage();
+        skuImage.setSkuId(skuInfo.getId());
+        skuImageMapper.delete(skuImage);*/
+
+        List<SkuImage> skuImageList = skuInfo.getSkuImageList();
+        if (checkList(skuImageList)){
+            for (SkuImage image : skuImageList) {
+                image.setSkuId(skuInfo.getId());
+                skuImageMapper.insertSelective(image);
+            }
+        }
+
+        //保存sku销售属性
+        /*SkuSaleAttrValue skuSaleAttrValue = new SkuSaleAttrValue();
+        skuSaleAttrValue.setSkuId(skuInfo.getId());
+        skuSaleAttrValueMapper.delete(skuSaleAttrValue);*/
+
+        List<SkuSaleAttrValue> skuSaleAttrValueList = skuInfo.getSkuSaleAttrValueList();
+        if (checkList(skuSaleAttrValueList)){
+            for (SkuSaleAttrValue saleAttrValue : skuSaleAttrValueList) {
+                saleAttrValue.setSkuId(skuInfo.getId());
+                skuSaleAttrValueMapper.insertSelective(saleAttrValue);
+            }
+        }
+    }
+
+
     //自定义判断集合是否为空的泛型方法
     //如果参数为ArrayList<T>， 则上述获取的集合类型也要变为ArrayList<T>
     public <T> boolean checkList(List<T> list){
         if (list!=null&&list.size()>0){
-            return false;
+            return true;
         }
-        return true;
+        return false;
     }
 }

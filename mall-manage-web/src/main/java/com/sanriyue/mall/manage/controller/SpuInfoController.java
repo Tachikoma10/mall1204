@@ -2,6 +2,7 @@ package com.sanriyue.mall.manage.controller;
 
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.sanriyue.mall.bean.BaseSaleAttr;
+import com.sanriyue.mall.bean.SpuImage;
 import com.sanriyue.mall.bean.SpuInfo;
 import com.sanriyue.mall.service.ManageService;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -30,9 +31,5 @@ public class SpuInfoController {
         manageService.saveSpuInfo(spuInfo);
     }
 
-    //TODO http://localhost:8082/spuSaleAttrList?spuId=5
 
-    //TODO http://localhost:8082/spuImageList?spuId=5
-
-    //TODO http://localhost:8082/saveSkuInfo
 }

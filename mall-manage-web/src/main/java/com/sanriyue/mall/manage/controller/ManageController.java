@@ -31,9 +31,11 @@ public class ManageController {
 
         return manageService.getCatalog3(catalog2Id);
     }
-
+    //http://localhost:8082/attrInfoList?catalog3Id=61
+    //添加sku时修改这个方法，要回显平台属性和平台属性值
     @RequestMapping("attrInfoList")
     public List<BaseAttrInfo> attrInfoList(String catalog3Id){
+
         return manageService.getAttrList(catalog3Id);
     }
 
