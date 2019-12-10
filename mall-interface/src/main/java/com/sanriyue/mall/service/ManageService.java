@@ -3,6 +3,7 @@ package com.sanriyue.mall.service;
 import com.sanriyue.mall.bean.*;
 
 import java.util.List;
+import java.util.Map;
 
 public interface ManageService {
     List<BaseCatalog1> getCatalog1();
@@ -60,4 +61,36 @@ public interface ManageService {
      * @Date: 2019/12/9 19:45
      */
     void saveSkuInfo(SkuInfo skuInfo);
+
+    /**
+     * 功能描述: <由前端地址栏中的skuId查出skuInfo基本数据并回显>
+     * @MethodName: getSkuInfoPage
+     * @Param: [skuId]
+     * @Return: com.sanriyue.mall.bean.SkuInfo
+     * @Author: 三日月
+     * @Date: 2019/12/10 12:33
+     */
+    SkuInfo getSkuInfoPage(String skuId);
+
+    /**
+     * 功能描述: <回显sku对应的spu销售属性和值>
+     * @MethodName: getSpuSaleAttrListCheckBySku
+     * @Param: [skuInfo]
+     * @Return: java.util.List<com.sanriyue.mall.bean.SpuSaleAttr>
+     * @Author: 三日月
+     * @Date: 2019/12/10 19:04
+     */
+    List<SpuSaleAttr> getSpuSaleAttrListCheckBySku(SkuInfo skuInfo);
+
+    /**
+     * 功能描述: <实现页面不同销售属性的sku跳转>
+     * @MethodName: getSkuSaleAttrValueList
+     * @Param: [spuId]
+     * @Return: java.util.List<com.sanriyue.mall.bean.SkuSaleAttrValue>
+     * @Author: 三日月
+     * @Date: 2019/12/10 19:37
+     */
+    List<SkuSaleAttrValue> getSkuSaleAttrValueList(String spuId);
+    //上述的第二种实现
+    Map getSkuValueIdsMap(String spuId);
 }

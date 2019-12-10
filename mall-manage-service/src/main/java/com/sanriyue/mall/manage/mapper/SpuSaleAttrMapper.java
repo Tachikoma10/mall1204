@@ -15,4 +15,14 @@ public interface SpuSaleAttrMapper extends Mapper<SpuSaleAttr> {
      * @Date: 2019/12/9 19:16
      */
     List<SpuSaleAttr> getSpuSaleAttrList(String spuId);
+
+    /**
+     * 功能描述: <实现页面详情中销售属性回显>
+     * @MethodName: selectSpuSaleAttrListCheckBySku
+     * @Param: [id, spuId]
+     * @Return: java.util.List<com.sanriyue.mall.bean.SpuSaleAttr>
+     * @Author: 三日月
+     * @Date: 2019/12/10 19:06
+     */
+    List<SpuSaleAttr> selectSpuSaleAttrListCheckBySku(String id, String spuId);
 }

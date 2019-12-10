@@ -8,7 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 @Service
 public class ManageServiceImpl implements ManageService{
     @Autowired
@@ -290,6 +293,46 @@ public class ManageServiceImpl implements ManageService{
                 skuSaleAttrValueMapper.insertSelective(saleAttrValue);
             }
         }
+    }
+
+    /**
+     * 功能描述: <实现商品详情页面数据的展示>
+     * @MethodName: getSkuInfoPage
+     * @Param: [skuId]
+     * @Return: com.sanriyue.mall.bean.SkuInfo
+     * @Author: 三日月
+     * @Date: 2019/12/10 12:34
+     */
+    @Override
+    public SkuInfo getSkuInfoPage(String skuId) {
+        SkuInfo skuInfo = skuInfoMapper.selectByPrimaryKey(skuId);
+        //封装sku图片列表数据
+        SkuImage skuImage = new SkuImage();
+        skuImage.setSkuId(skuId);
+        List<SkuImage> skuImageList = skuImageMapper.select(skuImage);
+        skuInfo.setSkuImageList(skuImageList);
+        return skuInfo;
+    }
+
+    @Override
+    public List<SpuSaleAttr> getSpuSaleAttrListCheckBySku(SkuInfo skuInfo) {
+
+        return spuSaleAttrMapper.selectSpuSaleAttrListCheckBySku(skuInfo.getId(),skuInfo.getSpuId());
+    }
+
+    @Override
+    public List<SkuSaleAttrValue> getSkuSaleAttrValueList(String spuId) {
+        return skuSaleAttrValueMapper.selectSkuSaleAttrValueList(spuId);
+    }
+
+    @Override
+    public Map getSkuValueIdsMap(String spuId) {
+        List<Map> mapList = skuSaleAttrValueMapper.getSaleAttrValuesBySpu(spuId);
+        Map<Object, Object> hahMap = new HashMap<>();
+        for (Map map : mapList) {
+            hahMap.put(map.get("value_ids"),map.get("sku_id"));
+        }
+        return hahMap;
     }
 
 
